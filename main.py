@@ -1,8 +1,11 @@
 import logging
 import logging.config
-import storage
-import yaml
 import os
+
+import yaml
+
+import storage
+import ml
 
 LOGGER_FILE = "templates/logging.yml"
 
@@ -18,10 +21,13 @@ def get_logger():
 def main():
     get_logger()
     intents = storage.load_intents()
+    ml.modeling(intents)
+    while True:
+        print(">> ")
+        _input = input()
+        intent = ml.get_intent(_input)
+        logging.info("Intent: %s, Response: %s", intent, storage.get_random_response(intent))
 
 
 if __name__ == "__main__":
     main()
-
-
-

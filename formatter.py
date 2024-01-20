@@ -1,7 +1,7 @@
 import re
 
 
-def filter_text(text):
+def format_text(text):
     text = text.lower()
     text = text.strip()
 
