@@ -15,13 +15,13 @@ vec_x = None
 
 
 def prepare_context(intents):
-    x = []
+    global x
     for intent in intents:
         examples = intents[intent]["examples"]
         responses = intents[intent]["responses"]
         prepare_x_data(examples, intent)
         prepare_x_data(responses, intent)
-    vectorizing(x)
+    vectorizing()
 
 
 def prepare_x_data(x_data, intent):
@@ -35,7 +35,7 @@ def prepare_x_data(x_data, intent):
 
 
 # Обучаем векторайзер и все тексты преобразуем в вектора
-def vectorizing(x):
+def vectorizing():
     global vec_x
     vectorizer.fit(x)
     vec_x = vectorizer.transform(x)
