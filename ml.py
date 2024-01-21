@@ -1,6 +1,5 @@
 import logging
 
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score, f1_score
@@ -60,10 +59,13 @@ def get_intent(user_text):
     formatted_text = formatter.format_text(user_text)
     vec_text = vectorizer.transform([formatted_text])
     intent = model.predict(vec_text)[0]
-    print_predicted_intents_table(formatted_text)
+    intent = fix_prediction(vec_text, intent)
     return intent
 
 
-def print_predicted_intents_table(formatted_text):
-    proba = model.predict_proba(vectorizer.transform([formatted_text]))
-    logging.debug(pd.DataFrame(columns=model.classes_, data=[proba[0]]).T.sort_values(by=0, ascending=False))
+def fix_prediction(vec_text, intent):
+    proba = model.predict_proba(vec_text)
+    if proba.max() < 0.20:
+        return "failure_phrases"
+    else:
+        return intent
