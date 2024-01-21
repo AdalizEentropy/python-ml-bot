@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, f1_score
 
 import formatter
 
-vectorizer = CountVectorizer()
+vectorizer = CountVectorizer(ngram_range=(1, 2), analyzer="char")
 model = RandomForestClassifier()
 x = []
 y = []
@@ -60,8 +60,10 @@ def get_intent(user_text):
     formatted_text = formatter.format_text(user_text)
     vec_text = vectorizer.transform([formatted_text])
     intent = model.predict(vec_text)[0]
-
-    proba = model.predict_proba(vectorizer.transform([formatted_text]))
-    # Вывести на экран список вероятных интентов
-    print(pd.DataFrame(columns=model.classes_, data=[proba[0]]).T.sort_values(by=0, ascending=False))
+    print_predicted_intents_table(formatted_text)
     return intent
+
+
+def print_predicted_intents_table(formatted_text):
+    proba = model.predict_proba(vectorizer.transform([formatted_text]))
+    logging.debug(pd.DataFrame(columns=model.classes_, data=[proba[0]]).T.sort_values(by=0, ascending=False))
